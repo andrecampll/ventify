@@ -1,5 +1,7 @@
 import { Metadata } from 'next'
 
+import { AddButton } from '@/components/add-button'
+
 import { ArtistsRanking } from './components/artists-ranking'
 import { ArtistsTable } from './components/artists-table'
 
@@ -75,10 +77,17 @@ const artistsData = [
 
 export default function Home() {
   return (
-    <div className="my-4 grid gap-5">
-      <ArtistsRanking data={artistsRanking} />
+    <div className="my-4 grid gap-5 lg:grid-cols-9 lg:grid-rows-6">
+      <div className="lg:col-span-6 lg:row-span-6">
+        <ArtistsTable data={artistsData} />
+      </div>
+      <div className="lg:col-span-3 lg:row-span-3">
+        <ArtistsRanking data={artistsRanking} />
+      </div>
 
-      <ArtistsTable data={artistsData} />
+      <div className="lg:col-span-3 lg:row-span-3">test</div>
+
+      <AddButton />
     </div>
   )
 }

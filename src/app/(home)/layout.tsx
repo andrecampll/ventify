@@ -9,8 +9,8 @@ export default function AuthLayout({
     <>
       <Header />
 
-      <main className="m-auto max-w-5xl px-4 md:px-12">
-        <div>{children}</div>
+      <main className="px-4 md:px-12">
+        <div className="m-auto max-w-5xl">{children}</div>
       </main>
     </>
   )
