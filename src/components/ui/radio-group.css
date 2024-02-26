@@ -1,0 +1,43 @@
+@import '@radix-ui/colors/black-alpha.css';
+@import '@radix-ui/colors/violet.css';
+
+button {
+  all: unset;
+}
+
+.RadioGroupItem {
+  background-color: white;
+  width: 16px;
+  height: 16px;
+  border-radius: 100%;
+  border: 1px solid #ccc;
+}
+
+.RadioGroupItem:focus {
+  box-shadow: 0 0 0 1px black;
+}
+
+.RadioGroupIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.RadioGroupIndicator::after {
+  content: '';
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #672D87;
+}
+
+.Label {
+  color: black;
+  font-size: 16px;
+  line-height: 1;
+  padding-left: 8px;
+}
