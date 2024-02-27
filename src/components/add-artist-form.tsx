@@ -3,7 +3,11 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCallback } from 'react'
 import { useForm } from 'react-hook-form'
+import { uuid } from 'uuidv4'
 import { z } from 'zod'
+
+import { Artist } from '@/data/types/artist'
+import { useArtists } from '@/hooks/use-artists'
 
 import { Button } from './button'
 import { Input } from './input'
@@ -16,9 +20,13 @@ const addArtistFormSchema = z.object({
   artistFavoriteMusicVideo: z.string().url({
     message: 'Please input a valid URL!',
   }),
-  artistRating: z.number().min(1, {
-    message: 'Please select a rating!',
-  }),
+  artistRating: z
+    .number({
+      invalid_type_error: 'Please select a rating!',
+    })
+    .min(1, {
+      message: 'Please select a rating!',
+    }),
 })
 
 type AddArtistFormData = z.infer<typeof addArtistFormSchema>
@@ -33,9 +41,21 @@ export function AddArtistForm() {
     resolver: zodResolver(addArtistFormSchema),
   })
 
-  const handleAddArtist = useCallback((data: AddArtistFormData) => {
-    console.log('submitted', data)
-  }, [])
+  const { addArtist } = useArtists()
+
+  const handleAddArtist = useCallback(
+    (data: AddArtistFormData) => {
+      const artist: Artist = {
+        id: uuid(),
+        name: data.artistName,
+        rating: data.artistRating,
+        favoriteMusicVideo: data.artistFavoriteMusicVideo,
+      }
+
+      addArtist(artist)
+    },
+    [addArtist],
+  )
 
   return (
     <form

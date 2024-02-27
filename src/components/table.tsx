@@ -1,16 +1,15 @@
-import { FaTrash, FaYoutube } from 'react-icons/fa'
-import { FaPencil } from 'react-icons/fa6'
+import { Pencil, Trash, Youtube } from 'lucide-react'
+
+import { Artist } from '@/data/types/artist'
 
 import { Tooltip } from './ui/tooltip'
 
 type TableProps = {
-  data: {
-    name: string
-    rating: number
-  }[]
+  data: Artist[]
+  onDeleteRow: (id: string) => void
 }
 
-export function Table({ data }: TableProps) {
+export function Table({ data, onDeleteRow }: TableProps) {
   return (
     <div className="h-[500px] overflow-y-auto">
       <table className="w-full">
@@ -21,30 +20,52 @@ export function Table({ data }: TableProps) {
             <th className="p-4 pl-0 text-left text-gray-600">Actions</th>
           </tr>
         </thead>
-        <tbody className="">
-          {data.map((artist) => (
-            <tr
-              key={artist.name}
-              className="group border-b border-gray-200 hover:bg-background hover:text-secondary"
-            >
-              <td className="p-4">{artist.name}</td>
-              <td className="p-4 pl-0">{artist.rating}</td>
-              <td className="none p-4 pl-0 ">
-                <div className="invisible flex items-center gap-4 group-hover:visible">
-                  <Tooltip message="Watch">
-                    <FaYoutube size={20} />
-                  </Tooltip>
-                  <Tooltip message="Edit">
-                    <FaPencil size={15} />
-                  </Tooltip>
-                  <Tooltip message="Delete">
-                    <FaTrash size={15} />
-                  </Tooltip>
-                </div>
+
+        {data.length === 0 ? (
+          <tbody>
+            <tr>
+              <td className="p-4 text-center" colSpan={3}>
+                No artists found
               </td>
             </tr>
-          ))}
-        </tbody>
+          </tbody>
+        ) : (
+          <tbody>
+            {data.map((artist) => (
+              <tr
+                key={artist.id}
+                className="group border-b border-gray-200 hover:bg-background hover:text-secondary"
+              >
+                <td className="p-4">{artist.name}</td>
+                <td className="p-4 pl-0">{artist.rating}</td>
+                <td className="none p-4 pl-0 ">
+                  <div className="invisible flex items-center gap-4 group-hover:visible">
+                    <Tooltip message="Watch">
+                      <a
+                        href={artist.favoriteMusicVideo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Youtube size={15} />
+                      </a>
+                    </Tooltip>
+                    <Tooltip message="Edit">
+                      <Pencil size={15} />
+                    </Tooltip>
+                    <Tooltip message="Delete">
+                      <button
+                        className="cursor-pointer"
+                        onClick={() => onDeleteRow(artist.id)}
+                      >
+                        <Trash size={15} />
+                      </button>
+                    </Tooltip>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        )}
       </table>
     </div>
   )
