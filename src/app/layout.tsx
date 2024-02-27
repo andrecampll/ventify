@@ -14,6 +14,9 @@ export const metadata: Metadata = {
     default: 'Home',
   },
   description: 'Ventify music management',
+  icons: {
+    icon: '/logo.png',
+  },
 }
 
 export default function RootLayout({
