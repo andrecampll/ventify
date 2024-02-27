@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { forwardRef, ReactNode } from 'react'
 
 type InputProps = {
   icon?: ReactNode
@@ -6,26 +6,32 @@ type InputProps = {
   error?: string
 } & React.HTMLProps<HTMLInputElement>
 
-export function Input({ icon, id, error, ...props }: InputProps) {
-  return (
-    <div className="[&+&]:mt-2">
-      {props.label && (
-        <label className="text-sm" htmlFor={id}>
-          {props.label}
-        </label>
-      )}
+export const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ icon, id, error, type = 'text', ...props }, ref) => {
+    return (
+      <div className="[&+&]:mt-2">
+        {props.label && (
+          <label className="text-sm" htmlFor={id}>
+            {props.label}
+          </label>
+        )}
 
-      <div
-        className={`mt-1 flex items-center gap-2 rounded-sm border-2 px-2 py-1 ${
-          error ? 'border-red-400 [&>svg]:text-red-400' : 'border-gray-200'
-        }`}
-      >
-        <input type="text" className="border-1 w-full" {...props} />
+        <div
+          className={`mt-1 flex items-center gap-2 rounded-sm border-2 px-2 py-1 ${
+            error ? 'border-red-400 [&>svg]:text-red-400' : 'border-gray-200'
+          }`}
+        >
+          <input type={type} className="border-1 w-full" ref={ref} {...props} />
 
-        {icon && icon}
+          {icon && icon}
+        </div>
+
+        <div>
+          {error && <span className="text-xs text-red-400">{error}</span>}
+        </div>
       </div>
+    )
+  },
+)
 
-      <div>{error && <span className="text-red-400">{error}</span>}</div>
-    </div>
-  )
-}
+Input.displayName = 'Input'

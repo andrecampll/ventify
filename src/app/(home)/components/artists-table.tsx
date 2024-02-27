@@ -6,15 +6,11 @@ import { Button } from '@/components/button'
 import { Card } from '@/components/card'
 import { Input } from '@/components/input'
 import { Table } from '@/components/table'
+import { useArtists } from '@/hooks/use-artists'
 
-type ArtistsTableProps = {
-  data: {
-    name: string
-    rating: number
-  }[]
-}
+export function ArtistsTable() {
+  const { artists, deleteArtist } = useArtists()
 
-export function ArtistsTable({ data }: ArtistsTableProps) {
   return (
     <Card
       title="Artists"
@@ -32,7 +28,7 @@ export function ArtistsTable({ data }: ArtistsTableProps) {
         </div>
 
         <div className="mt-4">
-          <Table data={data} />
+          <Table data={artists} onDeleteRow={deleteArtist} />
         </div>
       </main>
     </Card>
