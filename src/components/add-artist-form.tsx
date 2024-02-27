@@ -62,7 +62,7 @@ export function AddArtistForm() {
   return (
     <form
       onSubmit={handleSubmit(handleAddArtist)}
-      className="pb-4 min-[1050px]:pb-10"
+      className="pb-4 min-[1050px]:pb-10 [&>div]:mt-2"
     >
       <Input
         label="Artist name"
