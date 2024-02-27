@@ -3,19 +3,29 @@ import { ReactNode } from 'react'
 type CardProps = {
   children: ReactNode
   title: string
-  actionComponent?: ReactNode
+  headerComponent?: ReactNode
+  footerComponent?: ReactNode
 }
 
-export function Card({ children, title, actionComponent }: CardProps) {
+export function Card({
+  children,
+  title,
+  headerComponent,
+  footerComponent,
+}: CardProps) {
   return (
     <div className="rounded-md bg-white shadow-md">
-      <div className="flex items-center justify-between border-b-2 px-4 py-1">
+      <header className="flex items-center justify-between border-b-2 px-4 py-1">
         <h1 className="font-bold text-secondary">{title}</h1>
 
-        {actionComponent && actionComponent}
-      </div>
+        {headerComponent && headerComponent}
+      </header>
 
       {children}
+
+      {footerComponent && (
+        <footer className="border-t-2">{footerComponent}</footer>
+      )}
     </div>
   )
 }

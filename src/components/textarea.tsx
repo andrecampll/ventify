@@ -1,15 +1,15 @@
 import { forwardRef, ReactNode } from 'react'
 
-type InputProps = {
+type TextAreaProps = {
   icon?: ReactNode
   label?: string
   error?: string
-} & React.HTMLProps<HTMLInputElement>
+} & React.HTMLProps<HTMLTextAreaElement>
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ icon, id, error, type = 'text', ...props }, ref) => {
+export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
+  ({ icon, id, error, className = '', ...props }, ref) => {
     return (
-      <div>
+      <div className={`${className}`}>
         {props.label && (
           <label className="text-sm" htmlFor={id}>
             {props.label}
@@ -17,11 +17,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
 
         <div
-          className={`mt-1 flex items-center gap-2 rounded-sm border-2 px-2 py-1 ${
+          className={`mt-1 flex items-center gap-2 rounded-sm border-2 p-1 md:h-full ${
             error ? 'border-red-400 [&>svg]:text-red-400' : 'border-gray-200'
           }`}
         >
-          <input type={type} className="border-1 w-full" ref={ref} {...props} />
+          <textarea
+            className="border-1 w-full md:h-full md:resize-none"
+            ref={ref}
+            {...props}
+          />
 
           {icon && icon}
         </div>
@@ -34,4 +38,4 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   },
 )
 
-Input.displayName = 'Input'
+TextArea.displayName = 'TextArea'

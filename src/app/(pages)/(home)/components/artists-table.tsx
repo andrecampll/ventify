@@ -1,6 +1,7 @@
 'use client'
 
 import { Search } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 import { Button } from '@/components/button'
 import { Card } from '@/components/card'
@@ -10,12 +11,18 @@ import { useArtists } from '@/hooks/use-artists'
 
 export function ArtistsTable() {
   const { artists, deleteArtist } = useArtists()
+  const router = useRouter()
 
   return (
     <Card
       title="Artists"
-      actionComponent={
-        <Button className="rounded-md text-xl font-bold">+</Button>
+      headerComponent={
+        <Button
+          className="rounded-md text-xl font-bold"
+          onClick={() => router.push('/add-artist')}
+        >
+          +
+        </Button>
       }
     >
       <main className="pt-4">
