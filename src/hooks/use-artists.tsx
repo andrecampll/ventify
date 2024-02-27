@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useCallback, useContext } from 'react'
+import { createContext, useCallback, useContext, useMemo } from 'react'
 
 import { Artist } from '@/data/types/artist'
 
@@ -8,6 +8,7 @@ import useLocalStorage from './use-local-storage'
 
 type ArtistContextType = {
   artists: Artist[]
+  artistsRankingByRating: Artist[]
   addArtist: (artist: Artist) => void
   deleteArtist: (artistId: string) => void
 }
@@ -29,8 +30,14 @@ export function ArtistsProvider({ children }: { children: React.ReactNode }) {
     [setArtists],
   )
 
+  const artistsRankingByRating = useMemo(() => {
+    return artists.sort((a, b) => b.rating - a.rating).slice(0, 5)
+  }, [artists])
+
   return (
-    <ArtistContext.Provider value={{ artists, addArtist, deleteArtist }}>
+    <ArtistContext.Provider
+      value={{ artists, addArtist, deleteArtist, artistsRankingByRating }}
+    >
       {children}
     </ArtistContext.Provider>
   )

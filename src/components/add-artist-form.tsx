@@ -3,7 +3,8 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCallback } from 'react'
 import { useForm } from 'react-hook-form'
-import { uuid } from 'uuidv4'
+import { toast } from 'sonner'
+import { v4 } from 'uuid'
 import { z } from 'zod'
 
 import { Artist } from '@/data/types/artist'
@@ -46,13 +47,14 @@ export function AddArtistForm() {
   const handleAddArtist = useCallback(
     (data: AddArtistFormData) => {
       const artist: Artist = {
-        id: uuid(),
+        id: v4(),
         name: data.artistName,
         rating: data.artistRating,
         favoriteMusicVideo: data.artistFavoriteMusicVideo,
       }
 
       addArtist(artist)
+      toast.success('Artist added successfully!', {})
     },
     [addArtist],
   )
