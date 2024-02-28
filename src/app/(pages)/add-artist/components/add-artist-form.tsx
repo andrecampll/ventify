@@ -145,6 +145,7 @@ export function AddArtistForm() {
             <label className="text-sm">Rating</label>
             <RadioGroup
               {...register('artistRating')}
+              value={getValues().artistRating?.toString()}
               onChange={(value) => setValue('artistRating', Number(value))}
             />
             <span className="text-xs text-red-400">
