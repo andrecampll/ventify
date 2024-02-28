@@ -15,6 +15,7 @@ export function AddArtistGenreInput({
     <div className="mt-2">
       <label className="text-sm">Genre</label>
       <TagsInput
+        separators={[',', 'Enter']}
         value={value}
         onChange={onChange}
         name="genres"
