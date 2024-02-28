@@ -11,6 +11,7 @@ type ArtistContextType = {
   artistsRankingByRating: Artist[]
   addArtist: (artist: Artist) => void
   deleteArtist: (artistId: string) => void
+  getArtistById: (id: string) => Artist | undefined
 }
 
 const ArtistContext = createContext({} as ArtistContextType)
@@ -19,7 +20,22 @@ export function ArtistsProvider({ children }: { children: React.ReactNode }) {
   const [artists, setArtists] = useLocalStorage<Artist[]>('artists', [])
 
   const addArtist = useCallback(
-    (artist: Artist) => setArtists((prev) => [...prev, artist]),
+    // find if artist already exists and update it or add a new one
+    (artist: Artist) => {
+      setArtists((prev) => {
+        const artistIndex = prev.findIndex((a) => a.id === artist.id)
+
+        if (artistIndex !== -1) {
+          return [
+            ...prev.slice(0, artistIndex),
+            artist,
+            ...prev.slice(artistIndex + 1),
+          ]
+        }
+
+        return [...prev, artist]
+      })
+    },
     [setArtists],
   )
 
@@ -34,9 +50,20 @@ export function ArtistsProvider({ children }: { children: React.ReactNode }) {
     return artists.sort((a, b) => b.rating - a.rating).slice(0, 5)
   }, [artists])
 
+  const getArtistById = useCallback(
+    (id: string) => artists.find((artist) => artist.id === id),
+    [artists],
+  )
+
   return (
     <ArtistContext.Provider
-      value={{ artists, addArtist, deleteArtist, artistsRankingByRating }}
+      value={{
+        artists,
+        addArtist,
+        deleteArtist,
+        artistsRankingByRating,
+        getArtistById,
+      }}
     >
       {children}
     </ArtistContext.Provider>

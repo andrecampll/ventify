@@ -1,15 +1,18 @@
-export type Artist = {
-  id: string
-  name: string
-  rating: number
-  favoriteMusicVideo: string
-}
-
 export type ArtistAlbum = {
   id: string
   artist: string
   name: string
   image: string
+}
+
+export type Artist = {
+  id: string
+  name: string
+  rating: number
+  favoriteMusicVideo: string
+  description?: string | null
+  genres?: string[]
+  albums?: (ArtistAlbum | null)[]
 }
 
 export type ApiArtistAlbum = {

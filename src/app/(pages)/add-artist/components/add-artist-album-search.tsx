@@ -2,7 +2,7 @@
 
 import update from 'immutability-helper'
 import { Search } from 'lucide-react'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { toast } from 'sonner'
@@ -23,15 +23,49 @@ export const ItemTypes = {
   ALBUM: 'album',
 }
 
-export function AddArtistAlbumSearch() {
-  const [containers, setContainers] = useState<AlbumContainerState[]>([
-    { accepts: [ItemTypes.ALBUM], lastDroppedAlbum: null },
-    { accepts: [ItemTypes.ALBUM], lastDroppedAlbum: null },
-    { accepts: [ItemTypes.ALBUM], lastDroppedAlbum: null },
-    { accepts: [ItemTypes.ALBUM], lastDroppedAlbum: null },
-    { accepts: [ItemTypes.ALBUM], lastDroppedAlbum: null },
-    { accepts: [ItemTypes.ALBUM], lastDroppedAlbum: null },
-  ])
+type Props = {
+  onChangeAlbums: (albums: (ArtistAlbum | null)[]) => void
+  defaultAlbumsValue: (ArtistAlbum | null)[]
+}
+
+export function AddArtistAlbumSearch({ onChangeAlbums, ...props }: Props) {
+  const emptyContainers: AlbumContainerState[] = useMemo(
+    () =>
+      Array(6).fill({
+        accepts: [ItemTypes.ALBUM],
+        lastDroppedAlbum: null,
+      }),
+    [],
+  )
+
+  useEffect(() => {
+    if (props.defaultAlbumsValue) {
+      const initialContainersWithDefaultAlbums = emptyContainers.map(
+        (container, index) => {
+          const defaultAlbum = props.defaultAlbumsValue[index]
+
+          if (defaultAlbum) {
+            return {
+              ...container,
+              lastDroppedAlbum: defaultAlbum,
+            }
+          }
+
+          return container
+        },
+      )
+
+      const initialDroppedAlbumsIds = props.defaultAlbumsValue
+        .filter((album) => album)
+        .map((album) => album?.id as string)
+
+      setContainers(initialContainersWithDefaultAlbums)
+      setDroppedAlbumsIds(initialDroppedAlbumsIds)
+    }
+  }, [props.defaultAlbumsValue, emptyContainers])
+
+  const [containers, setContainers] =
+    useState<AlbumContainerState[]>(emptyContainers)
 
   const [droppedAlbumsIds, setDroppedAlbumsIds] = useState<string[]>([])
 
@@ -48,22 +82,29 @@ export function AddArtistAlbumSearch() {
         return
       }
 
+      const updatedContainerState = update(containers, {
+        [index]: {
+          lastDroppedAlbum: {
+            $set: item,
+          },
+        },
+      })
+
       setDroppedAlbumsIds((droppedAlbumsIds) =>
         update(droppedAlbumsIds, id ? { $push: [id] } : { $push: [] }),
       )
-      setContainers((containers) =>
-        update(containers, {
-          [index]: {
-            lastDroppedAlbum: {
-              $set: item,
-            },
-          },
-        }),
-      )
+
+      setContainers(updatedContainerState)
+
+      const albums = updatedContainerState
+        .map((container) => container.lastDroppedAlbum)
+        .filter((album) => album)
+
+      onChangeAlbums(albums)
 
       toast.success('Album added successfully!', {})
     },
-    [droppedAlbumsIds],
+    [droppedAlbumsIds, setContainers, onChangeAlbums, containers],
   )
 
   const handleDelete = useCallback(
@@ -81,20 +122,26 @@ export function AddArtistAlbumSearch() {
           (container) => container.lastDroppedAlbum?.id === albumId,
         )
 
-        setContainers((containers) =>
-          update(containers, {
-            [containerIndex]: {
-              lastDroppedAlbum: {
-                $set: null,
-              },
+        const updatedContainerState = update(containers, {
+          [containerIndex]: {
+            lastDroppedAlbum: {
+              $set: null,
             },
-          }),
-        )
-      }
+          },
+        })
 
-      toast.success('Album removed successfully!', {})
+        setContainers(updatedContainerState)
+
+        const albums = updatedContainerState
+          .map((container) => container.lastDroppedAlbum)
+          .filter((album) => album)
+
+        onChangeAlbums(albums)
+
+        toast.success('Album removed successfully!', {})
+      }
     },
-    [droppedAlbumsIds, containers, setContainers],
+    [droppedAlbumsIds, containers, setContainers, onChangeAlbums],
   )
 
   const [search, setSearch] = useState('')

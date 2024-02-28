@@ -1,4 +1,5 @@
 import { Pencil, Trash, Youtube } from 'lucide-react'
+import Link from 'next/link'
 
 import { Artist } from '@/data/types/artist'
 
@@ -50,7 +51,9 @@ export function Table({ data, onDeleteRow }: TableProps) {
                       </a>
                     </Tooltip>
                     <Tooltip message="Edit">
-                      <Pencil size={15} />
+                      <Link href={`/add-artist/${artist.id}`}>
+                        <Pencil size={15} />
+                      </Link>
                     </Tooltip>
                     <Tooltip message="Delete">
                       <button

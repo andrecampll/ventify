@@ -1,16 +1,29 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useCallback } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { v4 } from 'uuid'
 import { z } from 'zod'
 
 import { Input } from '@/components/input'
 import { TextArea } from '@/components/textarea'
 import { RadioGroup } from '@/components/ui/radio-group'
+import { useArtists } from '@/hooks/use-artists'
 
 import { AddArtistAlbumSearch } from './add-artist-album-search'
 import { AddArtistGenreInput } from './add-artist-genre-input'
+
+const artistAlbumsSchema = z
+  .object({
+    id: z.string(),
+    artist: z.string(),
+    name: z.string(),
+    image: z.string(),
+  })
+  .nullable()
 
 const addArtistFormSchema = z.object({
   artistName: z.string().min(3, {
@@ -28,29 +41,73 @@ const addArtistFormSchema = z.object({
     }),
   artistDescription: z.string().nullable(),
   artistGenres: z.array(z.string()),
+  artistAlbums: z.array(artistAlbumsSchema),
 })
 
 type AddArtistFormData = z.infer<typeof addArtistFormSchema>
 
 export function AddArtistForm() {
+  const { id } = useParams<{
+    id?: string
+  }>()
+
+  const { getArtistById, addArtist } = useArtists()
+
+  const initialArtistValue = id ? getArtistById(id) : undefined
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
     getValues,
+    reset,
   } = useForm<AddArtistFormData>({
     resolver: zodResolver(addArtistFormSchema),
-    defaultValues: {
-      artistGenres: [],
-    },
+    defaultValues: useMemo(() => {
+      return {
+        artistName: initialArtistValue?.name,
+        artistGenres: [],
+        artistAlbums: [],
+      }
+    }, [initialArtistValue]),
   })
 
-  // const { addArtist } = useArtists()
+  useEffect(() => {
+    if (initialArtistValue) {
+      reset({
+        artistName: initialArtistValue.name,
+        artistRating: initialArtistValue.rating,
+        artistFavoriteMusicVideo: initialArtistValue.favoriteMusicVideo,
+        artistDescription: initialArtistValue.description,
+        artistGenres: initialArtistValue.genres,
+        artistAlbums: initialArtistValue.albums,
+      })
+    }
+  }, [initialArtistValue, reset])
 
-  const handleAddArtist = useCallback((data: AddArtistFormData) => {
-    console.log('test', data)
-  }, [])
+  const router = useRouter()
+
+  const handleAddArtist = useCallback(
+    (data: AddArtistFormData) => {
+      const artist = {
+        id: initialArtistValue ? initialArtistValue.id : v4(),
+        name: data.artistName,
+        rating: data.artistRating,
+        favoriteMusicVideo: data.artistFavoriteMusicVideo,
+        description: data.artistDescription,
+        genres: data.artistGenres,
+        albums: data.artistAlbums,
+      }
+
+      addArtist(artist)
+
+      toast.success('Artist added successfully!', {})
+
+      router.push('/')
+    },
+    [addArtist, router, initialArtistValue],
+  )
 
   return (
     <form
@@ -108,7 +165,12 @@ export function AddArtistForm() {
           Favorite artist albums
         </h2>
 
-        <AddArtistAlbumSearch />
+        <AddArtistAlbumSearch
+          onChangeAlbums={(albums) => {
+            setValue('artistAlbums', albums)
+          }}
+          defaultAlbumsValue={getValues().artistAlbums}
+        />
       </div>
     </form>
   )
