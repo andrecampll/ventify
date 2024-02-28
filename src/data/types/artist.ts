@@ -4,3 +4,10 @@ export type Artist = {
   rating: number
   favoriteMusicVideo: string
 }
+
+export type ArtistAlbum = {
+  id: string
+  artist: string
+  name: string
+  image: string
+}

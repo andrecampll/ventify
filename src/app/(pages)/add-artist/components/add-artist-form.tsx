@@ -8,6 +8,7 @@ import { Input } from '@/components/input'
 import { TextArea } from '@/components/textarea'
 import { RadioGroup } from '@/components/ui/radio-group'
 
+import { AddArtistAlbumSearch } from './add-artist-album-search'
 import { AddArtistGenreInput } from './add-artist-genre-input'
 
 const addArtistFormSchema = z.object({
@@ -61,7 +62,7 @@ export function AddArtistForm() {
           Artist information
         </h2>
 
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
           <Input
             label="Artist name"
             error={errors.artistName?.message}
@@ -105,6 +106,8 @@ export function AddArtistForm() {
         <h2 className="text-center font-bold uppercase text-gray-400">
           Favorite artist albums
         </h2>
+
+        <AddArtistAlbumSearch />
       </div>
     </form>
   )

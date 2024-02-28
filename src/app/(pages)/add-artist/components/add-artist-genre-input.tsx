@@ -13,7 +13,7 @@ export function AddArtistGenreInput({
 }: AddArtistGenreInputProps) {
   return (
     <div className="mt-2">
-      <label className="text-sm">Genre</label>
+      <label className="mb-2 block text-sm">Genre</label>
       <TagsInput
         separators={[',', 'Enter']}
         value={value}
