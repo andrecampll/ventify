@@ -47,13 +47,21 @@ export const AlbumRow: FC<ArtistAlbumRowProps> = memo(function AlbumRow({
       data-testid="album"
       className={`group flex items-center gap-4 rounded-sm border-2 border-dashed border-gray-400 bg-background p-2 transition-colors hover:border-primary [&+li]:mt-2`}
     >
-      <Image
-        width={96}
-        height={96}
-        className="max-w-24"
-        src={image}
-        alt="Album cover"
-      />
+      {image ? (
+        <Image
+          width={96}
+          height={96}
+          className="max-w-24"
+          src={image}
+          alt="Album cover"
+        />
+      ) : (
+        <img
+          className="w-24"
+          src="https://via.placeholder.com/150"
+          alt="album placeholder"
+        />
+      )}
 
       <div className="flex flex-col gap-2">
         <span className="text-sm">

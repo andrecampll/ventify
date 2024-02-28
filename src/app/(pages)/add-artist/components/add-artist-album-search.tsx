@@ -5,21 +5,18 @@ import { Search } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { v4 } from 'uuid'
+import { toast } from 'sonner'
 
 import { Input } from '@/components/input'
 import { ArtistAlbum } from '@/data/types/artist'
+import { useDebounce } from '@/hooks/use-debouce'
 
 import { AlbumContainer } from './add-artist-album-container'
-import { AlbumRow } from './add-artist-album-row'
+import { AlbumList } from './add-artist-album-list'
 
 type AlbumContainerState = {
   accepts: string[]
   lastDroppedAlbum: ArtistAlbum | null
-}
-
-type AlbumState = ArtistAlbum & {
-  type: string
 }
 
 export const ItemTypes = {
@@ -34,30 +31,6 @@ export function AddArtistAlbumSearch() {
     { accepts: [ItemTypes.ALBUM], lastDroppedAlbum: null },
     { accepts: [ItemTypes.ALBUM], lastDroppedAlbum: null },
     { accepts: [ItemTypes.ALBUM], lastDroppedAlbum: null },
-  ])
-
-  const [albums] = useState<AlbumState[]>([
-    {
-      id: v4(),
-      artist: 'Pink Floyd',
-      name: 'The Dark Side of the Moon',
-      image: 'https://via.placeholder.com/150',
-      type: ItemTypes.ALBUM,
-    },
-    {
-      id: v4(),
-      artist: 'Pink Floyd',
-      name: 'The Wall',
-      image: 'https://via.placeholder.com/150',
-      type: ItemTypes.ALBUM,
-    },
-    {
-      id: v4(),
-      artist: 'Pink Floyd',
-      name: 'Wish You Were Here',
-      image: 'https://via.placeholder.com/150',
-      type: ItemTypes.ALBUM,
-    },
   ])
 
   const [droppedAlbumsIds, setDroppedAlbumsIds] = useState<string[]>([])
@@ -75,7 +48,7 @@ export function AddArtistAlbumSearch() {
         return
       }
 
-      setDroppedAlbumsIds(
+      setDroppedAlbumsIds((droppedAlbumsIds) =>
         update(droppedAlbumsIds, id ? { $push: [id] } : { $push: [] }),
       )
       setContainers((containers) =>
@@ -87,6 +60,8 @@ export function AddArtistAlbumSearch() {
           },
         }),
       )
+
+      toast.success('Album added successfully!', {})
     },
     [droppedAlbumsIds],
   )
@@ -116,39 +91,40 @@ export function AddArtistAlbumSearch() {
           }),
         )
       }
+
+      toast.success('Album removed successfully!', {})
     },
     [droppedAlbumsIds, containers, setContainers],
   )
 
+  const [search, setSearch] = useState('')
+
+  const deboucedSearchValue = useDebounce(search, 1000)
+
+  const handleSearch = useCallback(
+    (search: string) => {
+      setSearch(search)
+    },
+    [setSearch],
+  )
+
   return (
-    <div className="mt-4 flex w-full flex-col gap-4 md:flex-row-reverse md:items-center">
+    <div className="mt-4 flex w-full flex-col gap-4 md:flex-row-reverse">
       <DndProvider backend={HTML5Backend}>
         <div className="w-full">
           <Input
             icon={<Search size={20} className="text-gray-400" />}
             id="search"
             label="Search albums"
+            value={search}
+            onChange={(e) => handleSearch(e.target.value)}
           />
 
-          <div className="mt-2">
-            <ul style={{ overflow: 'hidden', clear: 'both' }}>
-              {albums.map((album) => (
-                <AlbumRow
-                  key={album.id}
-                  id={album.id}
-                  isDropped={isDropped(album.id)}
-                  type={album.type}
-                  artist={album.artist}
-                  name={album.name}
-                  image={album.image}
-                />
-              ))}
-            </ul>
-          </div>
+          <AlbumList searchTerm={deboucedSearchValue} isDropped={isDropped} />
         </div>
 
         <div
-          className="grid h-[430px] w-full grid-cols-3 grid-rows-2 items-center justify-items-center gap-4 bg-gray-300 p-4"
+          className="grid h-[430px] w-full grid-cols-3 grid-rows-2 items-center justify-items-center gap-4 bg-gray-300"
           style={{ overflow: 'hidden', clear: 'both' }}
         >
           {containers.map(({ accepts, lastDroppedAlbum }, index) => (

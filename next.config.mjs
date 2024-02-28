@@ -9,7 +9,7 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        hostname: 'via.placeholder.com',
+        hostname: 'lastfm.freetls.fastly.net',
       },
     ],
   },

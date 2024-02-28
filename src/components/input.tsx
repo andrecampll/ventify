@@ -1,10 +1,10 @@
-import { forwardRef, ReactNode } from 'react'
+import { forwardRef, InputHTMLAttributes, ReactNode } from 'react'
 
 type InputProps = {
   icon?: ReactNode
   label?: string
   error?: string
-} & React.HTMLProps<HTMLInputElement>
+} & InputHTMLAttributes<HTMLInputElement>
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ icon, id, error, type = 'text', ...props }, ref) => {
