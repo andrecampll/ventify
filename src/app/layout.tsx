@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Toaster } from 'sonner'
 
+import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 import { ArtistsProvider } from '@/hooks/use-artists'
 
@@ -34,9 +35,11 @@ export default function RootLayout({
         <ArtistsProvider>
           <Header />
 
-          <main className="px-4 md:px-12">
+          <main className="mb-8 min-h-[84vh] px-4 md:px-12">
             <div className="m-auto max-w-5xl">{children}</div>
           </main>
+
+          <Footer />
         </ArtistsProvider>
         <Toaster richColors />
       </body>

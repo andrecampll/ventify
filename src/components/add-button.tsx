@@ -8,7 +8,7 @@ export function AddButton() {
   return (
     <Vaul.Root shouldScaleBackground>
       <Vaul.Trigger asChild>
-        <div className="fixed bottom-0 right-0 mb-4 mr-4 rounded-[50%] shadow-md md:hidden">
+        <div className="fixed bottom-0 right-0 z-10 mb-4 mr-4 rounded-[50%] shadow-md md:hidden">
           <button className="flex h-[40px] w-[40px] items-center justify-center rounded-[50%] bg-gradient-to-r from-primary to-secondary p-2">
             <span className="text-3xl font-bold text-white">+</span>
           </button>
