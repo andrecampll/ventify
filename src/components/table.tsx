@@ -1,28 +1,39 @@
+'use client'
+
 import { Pencil, Trash, Youtube } from 'lucide-react'
 import Link from 'next/link'
+import { useMemo } from 'react'
 
 import { Artist } from '@/data/types/artist'
 
+import { TableHead } from './table-head'
 import { Tooltip } from './ui/tooltip'
 
 type TableProps = {
   data: Artist[]
   onDeleteRow: (id: string) => void
+  searchTerm?: string
 }
 
-export function Table({ data, onDeleteRow }: TableProps) {
+export function Table({ data, onDeleteRow, searchTerm }: TableProps) {
+  const filteredDataBySearch = useMemo(() => {
+    return searchTerm
+      ? data.filter((artist) =>
+          artist.name.toLowerCase().includes(searchTerm.toLowerCase()),
+        )
+      : data
+  }, [data, searchTerm])
+
   return (
     <div className="h-[500px] overflow-y-auto">
       <table className="w-full">
         <thead className="border-b border-gray-200">
           <tr>
-            <th className="p-4 text-left text-gray-600">Name</th>
-            <th className="p-4 pl-0 text-left text-gray-600">Rating</th>
-            <th className="p-4 pl-0 text-left text-gray-600">Actions</th>
+            <TableHead />
           </tr>
         </thead>
 
-        {data.length === 0 ? (
+        {filteredDataBySearch.length === 0 ? (
           <tbody>
             <tr>
               <td className="p-4 text-center" colSpan={3}>
@@ -32,14 +43,14 @@ export function Table({ data, onDeleteRow }: TableProps) {
           </tbody>
         ) : (
           <tbody>
-            {data.map((artist) => (
+            {filteredDataBySearch.map((artist) => (
               <tr
                 key={artist.id}
                 className="group border-b border-gray-200 hover:bg-background hover:text-secondary"
               >
                 <td className="p-4">{artist.name}</td>
-                <td className="p-4 pl-0">{artist.rating}</td>
-                <td className="none p-4 pl-0 ">
+                <td className="p-4 ">{artist.rating}</td>
+                <td className="none p-4  ">
                   <div className="invisible flex items-center gap-4 group-hover:visible">
                     <Tooltip message="Watch">
                       <a
