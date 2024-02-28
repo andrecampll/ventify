@@ -51,6 +51,9 @@ export function AddArtistForm() {
         name: data.artistName,
         rating: data.artistRating,
         favoriteMusicVideo: data.artistFavoriteMusicVideo,
+        albums: [],
+        genres: [],
+        description: null,
       }
 
       addArtist(artist)
