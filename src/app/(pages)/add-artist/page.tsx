@@ -20,7 +20,13 @@ export default function Home() {
               Cancel
             </Button>
 
-            <Button className="rounded-sm px-3 py-1 text-sm">Save</Button>
+            <Button
+              className="rounded-sm px-3 py-1 text-sm"
+              form="addArtistForm"
+              type="submit"
+            >
+              Save
+            </Button>
           </div>
         }
       >
