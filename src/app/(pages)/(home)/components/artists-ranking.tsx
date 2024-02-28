@@ -9,7 +9,7 @@ export function ArtistsRanking() {
   return (
     <Card
       title="Top 5"
-      actionComponent={<span className="text-xs font-bold">Highest rate</span>}
+      headerComponent={<span className="text-xs font-bold">Highest rate</span>}
     >
       <main className="p-4">
         <ul className="rounded-lg bg-white-500 p-4">
